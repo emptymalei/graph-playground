@@ -1,6 +1,8 @@
 # There are many representations of graphs using Python
 # Here is one example using dictioniary: https://www.python-course.eu/graphs_python.php
 # Here we will use two or three lists 
+# Though the representations are different, the logics are mostly the same.
+
 
 class Graph(object):
     """A graph object 
@@ -14,7 +16,7 @@ class Graph(object):
         if not isinstance(target_nodes, list):
             raise TypeError('target_nodes should be a list')
 
-        if weights:
+        if not (weights is None):
             if not isinstance(weights, list):
                 raise TypeError('weights should be a list if exists otherwise should be None')
 
@@ -79,14 +81,71 @@ class Graph(object):
         """
         self.source_nodes = self.source_nodes + new_sources
         self.target_nodes = self.target_nodes + new_targets
-        if self.weights:
-            self.weights = self.weights + new_weights
-        else:
+        if self.weights is None:
             raise Exception('This graph has no weights assigned')
+        else:
+            self.weights = self.weights + new_weights
+
+    def nodes_by_weight(self):
+        """Find all nodes for each weight
+        """
+
+        weight_dict = {}
+        for i in self.edges:
+            i_weight = i[-1]
+            i_edge = i[:2]
+
+            i_weight_nodes = weight_dict.get(i_weight, [])
+
+            for i_node in i_edge:
+                if i_node not in i_weight_nodes:
+                    i_weight_nodes.append(i_node)
+
+            weight_dict[i_weight] = i_weight_nodes
+
+        return weight_dict
+
+    def edges_by_weight(self):
+        """Find all edges for each weight
+        """
+
+        weight_dict = {}
+        for i in self.edges:
+            i_weight = i[-1]
+            i_edge = tuple(sorted(i[:2]))
+
+            i_weight_edges = weight_dict.get(i_weight, [])
+
+            if i_edge not in i_weight_edges:
+                i_weight_edges.append(i_edge)
+
+            weight_dict[i_weight] = i_weight_edges
+
+        return weight_dict
+
+    def weigts_by_node_comb(self):
+        """Find all the weights for each combination of nodes
+        """
+        edge_dict = {}
+        for i in self.edges:
+            i_weight = i[-1]
+            i_edge = tuple(sorted(i[:2]))
+
+            i_edge_weights = edge_dict.get(i_edge, [])
+
+            if i_weight not in i_edge_weights:
+                i_edge_weights.append(i_weight)
+
+            edge_dict[i_edge] = i_edge_weights
+
+        return edge_dict
 
     def __str__(self):
-        return f"nodes: {g.nodes}\nedges: {g.edges}"
+        return f"nodes: {self.nodes}\nedges: {self.edges}"
         
+
+
+
     
     
 if __name__ == '__main__':
@@ -105,6 +164,14 @@ if __name__ == '__main__':
     g.add_edges(new_source, new_target, new_weights)
 
     print(g)
+
+    g_null = Graph(source_nodes=[], target_nodes=[], weights=[])
+    
+    print(g_null)
+
+    g_null.add_edges(new_source, new_target, new_weights)
+
+    print(g_null)
 
 
     
