@@ -44,6 +44,7 @@ class Graph(object):
 
     @property
     def nodes(self):
+        self._nodes = self.__calculate_nodes(self.source_nodes, self.target_nodes)
         return self._nodes
 
     @nodes.setter
@@ -59,6 +60,7 @@ class Graph(object):
 
     @property
     def edges(self):
+        self._edges = self.__calculate_edges(self.source_nodes, self.target_nodes, self.weights)
         return self._edges
 
     @edges.setter
@@ -71,6 +73,19 @@ class Graph(object):
     @edges.deleter
     def edges(self):
         del self._edges
+
+    def add_edges(self, new_sources, new_targets, new_weights):
+        """add new edges to the graph
+        """
+        self.source_nodes = self.source_nodes + new_sources
+        self.target_nodes = self.target_nodes + new_targets
+        if self.weights:
+            self.weights = self.weights + new_weights
+        else:
+            raise Exception('This graph has no weights assigned')
+
+    def __str__(self):
+        return f"nodes: {g.nodes}\nedges: {g.edges}"
         
     
     
@@ -82,6 +97,14 @@ if __name__ == '__main__':
 
     g = Graph(source_nodes=sources, target_nodes=targets, weights=weights)
 
-    print('nodes: ', g.nodes)
-    print('edges: ', g.edges)
+    print(g)
+
+    new_source = [10,11]
+    new_target = [1,3]
+    new_weights = [1,1]
+    g.add_edges(new_source, new_target, new_weights)
+
+    print(g)
+
+
     
